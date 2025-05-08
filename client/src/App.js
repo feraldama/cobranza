@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/auth/Login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -12,6 +17,8 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+          {/* Redirige la raíz / a /login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
 
           {/* Rutas privadas (con Layout que incluye Navbar) */}

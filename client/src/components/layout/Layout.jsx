@@ -8,11 +8,12 @@ export default function Layout() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navbar ocupa todo el ancho */}
+      {/* Navbar con altura fija */}
       <Navbar setMobileOpen={setMobileOpen} />
 
+      {/* Contenedor principal que ocupa el resto */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar ahora está dentro del contenedor principal */}
+        {/* Sidebar ahora con altura completa menos navbar */}
         <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
         {/* Contenido principal */}

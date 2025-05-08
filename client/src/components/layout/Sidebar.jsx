@@ -144,7 +144,13 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       </div>
 
       {/* Desktop sidebar (siempre visible) */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 lg:bg-gray-800 lg:flex lg:flex-col bg-gray-800">
+      <div
+        className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 lg:bg-gray-800 lg:flex lg:flex-col bg-gray-800"
+        style={{
+          top: "64px",
+          height: "calc(100vh - 64px)",
+        }}
+      >
         <div className="flex-1 overflow-y-auto">
           <nav className="px-2 py-4 space-y-1">
             {navigation.map((item) => (

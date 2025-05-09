@@ -7,6 +7,10 @@ import {
   XMarkIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  HomeIcon,
+  UserGroupIcon,
+  CalendarDaysIcon,
+  DocumentIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 
@@ -14,12 +18,12 @@ const navigation = [
   {
     name: "Dashboard",
     href: "/dashboard",
-    icon: "🏠",
+    icon: <HomeIcon className="h-7 w-6" />,
   },
   {
     name: "Control de Acceso",
     href: "/access-control",
-    icon: "👥",
+    icon: <UserGroupIcon className="h-7 w-6" />,
     children: [
       { name: "Usuarios", href: "/users" },
       { name: "Roles", href: "/team/roles" },
@@ -29,7 +33,7 @@ const navigation = [
   {
     name: "Proyectos",
     href: "/projects",
-    icon: "📋",
+    icon: <DocumentIcon className="h-7 w-6" />,
     children: [
       { name: "Activos", href: "/projects/active" },
       { name: "Archivados", href: "/projects/archived" },
@@ -46,7 +50,7 @@ const navigation = [
   {
     name: "Calendario",
     href: "/calendar",
-    icon: "📅",
+    icon: <CalendarDaysIcon className="h-7 w-6" />,
     children: [
       { name: "Eventos", href: "/calendar/events" },
       { name: "Recordatorios", href: "/calendar/reminders" },

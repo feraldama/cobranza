@@ -8,8 +8,12 @@ router.post("/login", usuarioController.login);
 
 // Rutas protegidas (requieren autenticación)
 router.get("/", authMiddleware, usuarioController.getAllUsuarios);
+router.get("/search", authMiddleware, usuarioController.searchUsuarios);
 router.get("/:id", authMiddleware, usuarioController.getUsuarioById);
 
 // Más rutas según necesites
+// router.post("/", authMiddleware, usuarioController.createUsuario);
+// router.put("/:id", authMiddleware, usuarioController.updateUsuario);
+// router.delete("/:id", authMiddleware, usuarioController.deleteUsuario);
 
 module.exports = router;

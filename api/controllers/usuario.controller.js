@@ -4,8 +4,21 @@ const jwt = require("jsonwebtoken");
 
 exports.getAllUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.getAll();
-    res.json(usuarios);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { usuarios, total } = await Usuario.getAllPaginated(limit, offset);
+
+    res.json({
+      data: usuarios,
+      pagination: {
+        totalItems: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        itemsPerPage: limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -84,3 +97,32 @@ exports.login = async (req, res) => {
   }
 };
 // Más controladores según necesites
+exports.searchUsuarios = async (req, res) => {
+  try {
+    const { q: searchTerm } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    if (!searchTerm || searchTerm.trim() === "") {
+      return res
+        .status(400)
+        .json({ error: "El término de búsqueda no puede estar vacío" });
+    }
+
+    const { usuarios, total } = await Usuario.search(searchTerm, limit, offset);
+
+    res.json({
+      data: usuarios,
+      pagination: {
+        totalItems: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        itemsPerPage: limit,
+      },
+    });
+  } catch (error) {
+    console.error("Error en searchUsuarios:", error);
+    res.status(500).json({ error: "Error al buscar usuarios" });
+  }
+};

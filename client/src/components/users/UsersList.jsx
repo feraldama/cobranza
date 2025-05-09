@@ -1,7 +1,16 @@
 import { useState } from "react";
+import Buscador from "../common/Buscador";
 
-export default function UsuariosList({ usuarios, onDelete, onUpdate }) {
-  const [searchTerm, setSearchTerm] = useState("");
+export default function UsuariosList({
+  usuarios,
+  onDelete,
+  onUpdate,
+  pagination,
+  onSearch,
+  searchTerm,
+  onKeyPress,
+  onSearchSubmit,
+}) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -13,16 +22,6 @@ export default function UsuariosList({ usuarios, onDelete, onUpdate }) {
     UsuarioEstado: "A",
     LocalId: 1,
   });
-
-  // Filtrar usuarios basado en el término de búsqueda
-  const filteredUsers = usuarios.filter(
-    (user) =>
-      `${user.UsuarioNombre} ${user.UsuarioApellido}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      user.UsuarioCorreo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.UsuarioId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   // Abrir modal de edición
   const handleEditClick = (user) => {
@@ -73,37 +72,19 @@ export default function UsuariosList({ usuarios, onDelete, onUpdate }) {
 
   return (
     <>
-      {/* Barra superior con acciones y búsqueda */}
-      <div className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white">
-        {/* Barra de búsqueda */}
-        <div className="relative">
-          <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-              // style={{ marginLeft: "10px" }}
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            id="table-search-users"
-            className="block pl-8 pr-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Buscar usuarios"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      {/* Barra superior de búsqueda */}
+      <Buscador
+        searchTerm={searchTerm}
+        onSearch={onSearch}
+        onKeyPress={onKeyPress}
+        onSearchSubmit={onSearchSubmit}
+        placeholder="Buscar usuarios"
+      />
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-sm text-gray-600">
+          Mostrando {usuarios.length} de {pagination?.totalItems} usuarios
         </div>
+        {/* Resto de tu código */}
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         {/* Tabla de usuarios */}
@@ -134,7 +115,7 @@ export default function UsuariosList({ usuarios, onDelete, onUpdate }) {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((usuario) => (
+            {usuarios.map((usuario) => (
               <tr
                 key={usuario.UsuarioId}
                 className="bg-white border-b hover:bg-gray-50"
@@ -343,7 +324,7 @@ export default function UsuariosList({ usuarios, onDelete, onUpdate }) {
         )}
 
         {/* Mensaje cuando no hay resultados */}
-        {filteredUsers.length === 0 && (
+        {usuarios.length === 0 && (
           <div className="p-4 text-center text-gray-500">
             No se encontraron usuarios
           </div>

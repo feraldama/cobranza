@@ -1,9 +1,9 @@
 // src/services/usuarios.service.js
 import api from "./api";
 
-export const getUsuarios = async () => {
+export const getUsuarios = async (page = 1, limit = 10) => {
   try {
-    const response = await api.get("/api/usuarios");
+    const response = await api.get(`/api/usuarios?page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al obtener usuarios" };
@@ -43,5 +43,17 @@ export const deleteUsuario = async (id) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al eliminar usuario" };
+  }
+};
+
+export const searchUsuarios = async (searchTerm, page = 1, limit = 10) => {
+  console.log("log: 🚀 searchTerm:", searchTerm);
+  try {
+    const response = await api.get(
+      `/api/usuarios/search?q=${searchTerm}&page=${page}&limit=${limit}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Error al buscar usuarios" };
   }
 };

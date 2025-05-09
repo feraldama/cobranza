@@ -1,6 +1,7 @@
 import React from "react";
+import ActionButton from "../Button/ActionButton"; // Ajustá la ruta si es distinta
 
-export default function Buscador({
+export default function SearchButton({
   searchTerm,
   onSearch,
   onKeyPress,
@@ -39,12 +40,11 @@ export default function Buscador({
           onKeyDown={onKeyPress}
         />
       </div>
-      <button
+      <ActionButton
+        label="Buscar"
         onClick={onSearchSubmit}
-        className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-      >
-        Buscar
-      </button>
+        className="ml-2 text-white rounded-lg"
+      />
     </div>
   );
 }

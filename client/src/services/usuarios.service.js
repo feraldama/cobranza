@@ -12,7 +12,7 @@ export const getUsuarios = async (page = 1, limit = 10) => {
 
 export const getUsuarioById = async (id) => {
   try {
-    const response = await api.get(`/usuarios/${id}`);
+    const response = await api.get(`/api/usuarios/${id}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al obtener usuario" };
@@ -21,7 +21,7 @@ export const getUsuarioById = async (id) => {
 
 export const createUsuario = async (usuarioData) => {
   try {
-    const response = await api.post("/usuarios", usuarioData);
+    const response = await api.post("/api/usuarios", usuarioData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al crear usuario" };
@@ -30,7 +30,7 @@ export const createUsuario = async (usuarioData) => {
 
 export const updateUsuario = async (id, usuarioData) => {
   try {
-    const response = await api.put(`/usuarios/${id}`, usuarioData);
+    const response = await api.put(`/api/usuarios/${id}`, usuarioData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al actualizar usuario" };
@@ -39,7 +39,7 @@ export const updateUsuario = async (id, usuarioData) => {
 
 export const deleteUsuario = async (id) => {
   try {
-    const response = await api.delete(`/usuarios/${id}`);
+    const response = await api.delete(`/api/usuarios/${id}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Error al eliminar usuario" };
@@ -47,7 +47,6 @@ export const deleteUsuario = async (id) => {
 };
 
 export const searchUsuarios = async (searchTerm, page = 1, limit = 10) => {
-  console.log("log: 🚀 searchTerm:", searchTerm);
   try {
     const response = await api.get(
       `/api/usuarios/search?q=${searchTerm}&page=${page}&limit=${limit}`

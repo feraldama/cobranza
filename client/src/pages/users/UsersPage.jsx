@@ -3,9 +3,12 @@ import {
   getUsuarios,
   deleteUsuario,
   searchUsuarios,
+  createUsuario,
+  updateUsuario,
 } from "../../services/usuarios.service";
 import UsersList from "../../components/users/UsersList";
 import Pagination from "../../components/common/Pagination";
+import { SuccessModal } from "../../components/common/Modal/SuccessModal";
 
 export default function UsuariosPage() {
   const [usuariosData, setUsuariosData] = useState({
@@ -15,9 +18,13 @@ export default function UsuariosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(""); // <-- Este estado mantendrá lo que escribes
-  const [appliedSearchTerm, setAppliedSearchTerm] = useState(""); // <-- Este es el término que se usa para buscar
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const itemsPerPage = 10;
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchUsuarios = useCallback(async () => {
     try {
@@ -67,8 +74,45 @@ export default function UsuariosPage() {
       await deleteUsuario(id);
       setUsuariosData((prev) => ({
         ...prev,
-        usuarios: prev.usuarios.filter((usuario) => usuario.id !== id),
+        usuarios: prev.usuarios.filter((usuario) => usuario.UsuarioId !== id),
       }));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleCreate = () => {
+    setCurrentUser(null); // Indica que es un nuevo usuario
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (user) => {
+    setCurrentUser(user); // Usuario a editar
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (userData) => {
+    try {
+      if (!userData.UsuarioId && !currentUser) {
+        throw new Error("El ID de usuario es requerido");
+      }
+
+      if (currentUser) {
+        // Editar usuario existente
+        await updateUsuario(currentUser.UsuarioId, userData);
+        setSuccessMessage("Usuario actualizado exitosamente");
+      } else {
+        // Crear nuevo usuario - asegurar que tenga contraseña
+        if (!userData.UsuarioContrasena) {
+          throw new Error("La contraseña es requerida para nuevos usuarios");
+        }
+        const response = await createUsuario(userData);
+        setSuccessMessage(response.message || "Usuario creado exitosamente");
+      }
+
+      setIsModalOpen(false);
+      setShowSuccessModal(true);
+      fetchUsuarios(); // Refrescar la lista
     } catch (error) {
       setError(error.message);
     }
@@ -87,17 +131,31 @@ export default function UsuariosPage() {
       <UsersList
         usuarios={usuariosData.usuarios}
         onDelete={handleDelete}
+        onEdit={handleEdit}
+        onCreate={handleCreate}
         pagination={usuariosData.pagination}
         onSearch={handleSearch}
         searchTerm={searchTerm}
         onKeyPress={handleKeyPress}
         onSearchSubmit={applySearch}
+        isModalOpen={isModalOpen}
+        onCloseModal={() => setIsModalOpen(false)}
+        currentUser={currentUser}
+        onSubmit={handleSubmit}
       />
       <Pagination
         currentPage={currentPage}
         totalPages={usuariosData.pagination.totalPages}
         onPageChange={handlePageChange}
       />
+
+      {/* Modal de éxito - fuera de cualquier container que limite su ancho */}
+      {showSuccessModal && (
+        <SuccessModal
+          message={successMessage}
+          onClose={() => setShowSuccessModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const bcrypt = require("bcryptjs");
 
 const Usuario = {
   getAll: () => {
@@ -23,7 +24,7 @@ const Usuario = {
     });
   },
 
-  findByEmail: (email) => {
+  findByUsuarioId: (email) => {
     return new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM usuario WHERE UsuarioId = ? LIMIT 1",
@@ -109,6 +110,51 @@ const Usuario = {
           );
         }
       );
+    });
+  },
+
+  create: (usuarioData) => {
+    return new Promise(async (resolve, reject) => {
+      const hashedPassword = await bcrypt.hash(
+        usuarioData.UsuarioContrasena || "H4lc0n#05",
+        10
+      );
+      const query = `
+      INSERT INTO usuario (
+        UsuarioId, 
+        UsuarioNombre, 
+        UsuarioApellido, 
+        UsuarioCorreo, 
+        UsuarioContrasena, 
+        UsuarioIsAdmin, 
+        UsuarioEstado, 
+        LocalId
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+      const values = [
+        usuarioData.UsuarioId,
+        usuarioData.UsuarioNombre,
+        usuarioData.UsuarioApellido,
+        usuarioData.UsuarioCorreo,
+        usuarioData.UsuarioContrasena ? hashedPassword : hashedPassword,
+        usuarioData.UsuarioIsAdmin,
+        usuarioData.UsuarioEstado,
+        usuarioData.LocalId,
+      ];
+
+      db.query(query, values, (err, result) => {
+        if (err) return reject(err);
+        resolve({
+          UsuarioId: usuarioData.UsuarioId,
+          UsuarioNombre: usuarioData.UsuarioNombre,
+          UsuarioApellido: usuarioData.UsuarioApellido,
+          UsuarioCorreo: usuarioData.UsuarioCorreo,
+          UsuarioIsAdmin: usuarioData.UsuarioIsAdmin,
+          UsuarioEstado: usuarioData.UsuarioEstado,
+          LocalId: usuarioData.LocalId,
+        });
+      });
     });
   },
 };

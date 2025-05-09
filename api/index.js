@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo salió mal!");
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor backend corriendo en puerto ${PORT}`);
 });

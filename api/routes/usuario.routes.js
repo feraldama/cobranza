@@ -10,9 +10,10 @@ router.post("/login", usuarioController.login);
 router.get("/", authMiddleware, usuarioController.getAllUsuarios);
 router.get("/search", authMiddleware, usuarioController.searchUsuarios);
 router.get("/:id", authMiddleware, usuarioController.getUsuarioById);
+router.post("/", authMiddleware, usuarioController.createUsuario);
 
-// Más rutas según necesites
 // router.post("/", authMiddleware, usuarioController.createUsuario);
+
 // router.put("/:id", authMiddleware, usuarioController.updateUsuario);
 // router.delete("/:id", authMiddleware, usuarioController.deleteUsuario);
 

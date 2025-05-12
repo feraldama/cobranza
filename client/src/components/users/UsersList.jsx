@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchButton from "../common/Input/SearchButton";
 import ActionButton from "../common/Button/ActionButton";
+import DataTable from "../common/Table/DataTable";
 import { PlusIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function UsuariosList({
@@ -92,6 +93,38 @@ export default function UsuariosList({
     }
   };
 
+  // Configuración de columnas para la tabla
+  const columns = [
+    {
+      key: "UsuarioId",
+      label: "Usuario",
+    },
+    {
+      key: "UsuarioNombre",
+      label: "Nombre",
+      render: (item) => `${item.UsuarioNombre} ${item.UsuarioApellido}`,
+    },
+    {
+      key: "UsuarioCorreo",
+      label: "Email",
+      render: (item) => item.UsuarioCorreo || "-",
+    },
+    {
+      key: "UsuarioIsAdmin",
+      label: "Admin",
+      render: (item) => (item.UsuarioIsAdmin === "S" ? "Sí" : "No"),
+    },
+    {
+      key: "UsuarioEstado",
+      label: "Estado",
+      status: true,
+    },
+    {
+      key: "LocalId",
+      label: "Local",
+    },
+  ];
+
   return (
     <>
       {/* Barra superior de búsqueda y acciones */}
@@ -120,81 +153,15 @@ export default function UsuariosList({
         </div>
       </div>
 
-      {/* Tabla de usuarios */}
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Usuario
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Nombre
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Admin
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Estado
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Local
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Acciones
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((usuario) => (
-              <tr
-                key={usuario.UsuarioId}
-                className="bg-white border-b hover:bg-gray-50"
-              >
-                <td className="px-6 py-4 font-medium text-gray-900">
-                  {usuario.UsuarioId}
-                </td>
-                <td className="px-6 py-4">
-                  {usuario.UsuarioNombre} {usuario.UsuarioApellido}
-                </td>
-                <td className="px-6 py-4">{usuario.UsuarioCorreo || "-"}</td>
-                <td className="px-6 py-4">
-                  {usuario.UsuarioIsAdmin === "S" ? "Sí" : "No"}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    <div
-                      className={`h-2.5 w-2.5 rounded-full ${getEstadoColor(
-                        usuario.UsuarioEstado
-                      )} mr-2`}
-                    ></div>
-                    {getEstadoVisual(usuario.UsuarioEstado)}
-                  </div>
-                </td>
-                <td className="px-6 py-4">{usuario.LocalId}</td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => onEdit(usuario)}
-                    className="font-medium text-blue-600 hover:underline mr-4"
-                  >
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Mensaje cuando no hay resultados */}
-        {usuarios.length === 0 && (
-          <div className="p-4 text-center text-gray-500">
-            No se encontraron usuarios
-          </div>
-        )}
-      </div>
+      {/* Tabla de usuarios usando el componente DataTable */}
+      <DataTable
+        columns={columns}
+        data={usuarios}
+        onEdit={onEdit}
+        emptyMessage="No se encontraron usuarios"
+        getStatusColor={getEstadoColor}
+        getStatusText={getEstadoVisual}
+      />
 
       {/* Modal para crear/editar */}
       {isModalOpen && (
@@ -250,11 +217,10 @@ export default function UsuariosList({
                         type="text"
                         name="UsuarioId"
                         id="UsuarioId"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                         value={formData.UsuarioId}
                         onChange={handleInputChange}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         required
-                        disabled={!!currentUser}
                       />
                     </div>
                   )}
@@ -270,12 +236,13 @@ export default function UsuariosList({
                       type="text"
                       name="UsuarioNombre"
                       id="UsuarioNombre"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                       value={formData.UsuarioNombre}
                       onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                       required
                     />
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="UsuarioApellido"
@@ -287,11 +254,13 @@ export default function UsuariosList({
                       type="text"
                       name="UsuarioApellido"
                       id="UsuarioApellido"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                       value={formData.UsuarioApellido}
                       onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      required
                     />
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="UsuarioCorreo"
@@ -303,11 +272,12 @@ export default function UsuariosList({
                       type="email"
                       name="UsuarioCorreo"
                       id="UsuarioCorreo"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                       value={formData.UsuarioCorreo}
                       onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     />
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="LocalId"
@@ -325,6 +295,7 @@ export default function UsuariosList({
                       required
                     />
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="UsuarioIsAdmin"
@@ -335,14 +306,15 @@ export default function UsuariosList({
                     <select
                       name="UsuarioIsAdmin"
                       id="UsuarioIsAdmin"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                       value={formData.UsuarioIsAdmin}
                       onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     >
-                      <option value="S">Sí</option>
                       <option value="N">No</option>
+                      <option value="S">Sí</option>
                     </select>
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="UsuarioEstado"
@@ -353,9 +325,9 @@ export default function UsuariosList({
                     <select
                       name="UsuarioEstado"
                       id="UsuarioEstado"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                       value={formData.UsuarioEstado}
                       onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     >
                       <option value="A">Activo</option>
                       <option value="I">Inactivo</option>
@@ -416,12 +388,12 @@ export default function UsuariosList({
                 </div>
               </div>
 
-              <div className="flex items-center p-6 space-x-3 border-t border-gray-200 rounded-b">
+              <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
                 <button
                   type="submit"
                   className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  {currentUser ? "Guardar cambios" : "Crear usuario"}
+                  {currentUser ? "Actualizar" : "Crear"}
                 </button>
                 <button
                   type="button"

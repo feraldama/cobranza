@@ -96,10 +96,6 @@ export default function UsuariosPage() {
   const handleSubmit = async (userData) => {
     try {
       if (currentUser) {
-        // Si estamos editando y no cambiamos la contraseña, mantener la existente
-        if (!editingPassword) {
-          userData.UsuarioContrasena = currentUser.UsuarioContrasena;
-        }
         await updateUsuario(currentUser.UsuarioId, userData);
         setSuccessMessage("Usuario actualizado exitosamente");
       } else {

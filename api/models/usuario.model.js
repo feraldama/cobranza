@@ -175,8 +175,11 @@ const Usuario = {
           "LocalId",
         ];
 
-        // Si se proporciona una nueva contraseña, hashearla
-        if (usuarioData.UsuarioContrasena) {
+        // Si se proporciona una nueva contraseña y no está vacía, hashearla
+        if (
+          usuarioData.UsuarioContrasena &&
+          usuarioData.UsuarioContrasena.trim() !== ""
+        ) {
           const hashedPassword = await bcrypt.hash(
             usuarioData.UsuarioContrasena,
             10

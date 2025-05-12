@@ -30,6 +30,11 @@ export const createUsuario = async (usuarioData) => {
 
 export const updateUsuario = async (id, usuarioData) => {
   try {
+    // Eliminar contraseña vacía si no se quiere cambiar
+    if (usuarioData.UsuarioContrasena === "") {
+      delete usuarioData.UsuarioContrasena;
+    }
+
     const response = await api.put(`/api/usuarios/${id}`, usuarioData);
     return response.data;
   } catch (error) {

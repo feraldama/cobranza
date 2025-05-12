@@ -29,7 +29,10 @@ function Dashboard() {
       )}
 
       {/* Sección de Navegación */}
-      <section className="flex flex-col md:grid md:grid-cols-4 bg-white divide-y md:divide-y-0 md:divide-x w-full rounded-lg shadow-md">
+      <section
+        className="flex flex-col md:grid md:grid-cols-4 bg-white divide-y md:divide-y-0 md:divide-x w-full rounded-lg shadow-md"
+        style={{ marginBottom: "1px" }}
+      >
         <div className="flex px-8 py-5 text-gray-900 items-center hover:bg-gray-100 bg-blue-50 border-l-gray-100 border-b-blue-500 border-b-4">
           <ChartBarIcon className="w-14 text-gray-600" />
           <div className="ml-3">

@@ -149,10 +149,11 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
       {/* Desktop sidebar (siempre visible) */}
       <div
-        className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 lg:bg-gray-800 lg:flex lg:flex-col bg-gray-800"
+        className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 lg:flex lg:flex-col"
         style={{
           top: "64px",
           height: "calc(100vh - 64px)",
+          background: "#0F172A",
         }}
       >
         <div className="flex-1 overflow-y-auto">

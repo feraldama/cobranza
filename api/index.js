@@ -4,16 +4,27 @@ const cors = require("cors");
 
 // Importar rutas
 const usuarioRoutes = require("./routes/usuario.routes");
+const registroDiarioCajaRoutes = require("./routes/registrodiariocaja.routes");
 // const productoRoutes = require("./routes/producto.routes"); // Ejemplo adicional
 
 const app = express();
 
+// Configuración de CORS
+const corsOptions = {
+  origin: "*", // Permite todas las origenes
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  maxAge: 86400, // 24 horas
+};
+
 // Middlewares
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Rutas
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/registrodiariocaja", registroDiarioCajaRoutes);
 // app.use("/api/productos", productoRoutes); // Ejemplo adicional
 
 // Ruta de prueba

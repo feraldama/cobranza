@@ -11,6 +11,7 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import Layout from "./components/layout/Layout";
 import NotFound from "./pages/NotFound";
 import UsersPage from "./pages/users/UsersPage";
+import MovementsPage from "./pages/movements/MovementsPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             {/* Agrega aquí más rutas protegidas */}
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/movements/summary" element={<MovementsPage />} />;
           </Route>
 
           <Route path="*" element={<NotFound />} />

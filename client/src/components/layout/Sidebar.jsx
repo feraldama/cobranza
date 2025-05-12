@@ -21,6 +21,16 @@ const navigation = [
     icon: <HomeIcon className="h-7 w-6" />,
   },
   {
+    name: "Registro Diario",
+    href: "/movements",
+    icon: <UserGroupIcon className="h-7 w-6" />,
+    children: [
+      { name: "Ventas", href: "/movements/sales" },
+      { name: "Compras", href: "/movements/purchases" },
+      { name: "Registro Diario Caja", href: "/movements/summary" },
+    ],
+  },
+  {
     name: "Control de Acceso",
     href: "/access-control",
     icon: <UserGroupIcon className="h-7 w-6" />,

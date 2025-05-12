@@ -17,6 +17,8 @@ export default function UsuariosList({
   onCloseModal,
   currentUser,
   onSubmit,
+  editingPassword,
+  setEditingPassword,
 }) {
   const [formData, setFormData] = useState({
     UsuarioId: "",
@@ -34,6 +36,7 @@ export default function UsuariosList({
     if (currentUser) {
       setFormData({
         UsuarioId: currentUser.UsuarioId,
+        UsuarioContrasena: "", // No cargamos la contraseña por seguridad
         UsuarioNombre: currentUser.UsuarioNombre,
         UsuarioApellido: currentUser.UsuarioApellido,
         UsuarioCorreo: currentUser.UsuarioCorreo,
@@ -41,10 +44,12 @@ export default function UsuariosList({
         UsuarioEstado: currentUser.UsuarioEstado,
         LocalId: currentUser.LocalId,
       });
+      setEditingPassword(false); // Resetear estado de edición de contraseña
     } else {
       // Resetear para nuevo usuario
       setFormData({
         UsuarioId: "",
+        UsuarioContrasena: "",
         UsuarioNombre: "",
         UsuarioApellido: "",
         UsuarioCorreo: "",
@@ -53,7 +58,7 @@ export default function UsuariosList({
         LocalId: 1,
       });
     }
-  }, [currentUser]);
+  }, [currentUser, setEditingPassword]);
 
   // Manejar cambios en el formulario
   const handleInputChange = (e) => {
@@ -104,7 +109,6 @@ export default function UsuariosList({
             label="Nuevo Usuario"
             onClick={onCreate}
             icon={PlusIcon}
-            // className="text-red-500"
           />
         </div>
       </div>
@@ -233,49 +237,27 @@ export default function UsuariosList({
 
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-6 gap-6">
-                  {/* Campos del formulario... */}
                   {!currentUser && (
-                    <>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          htmlFor="UsuarioId"
-                          className="block mb-2 text-sm font-medium text-gray-900"
-                        >
-                          ID de Usuario
-                        </label>
-                        <input
-                          type="text"
-                          name="UsuarioId"
-                          id="UsuarioId"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
-                          value={formData.UsuarioId}
-                          onChange={handleInputChange}
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          htmlFor="UsuarioContrasena"
-                          className="block mb-2 text-sm font-medium text-gray-900"
-                        >
-                          Contraseña
-                        </label>
-                        <input
-                          type="password"
-                          name="UsuarioContrasena"
-                          id="UsuarioContrasena"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
-                          value={formData.UsuarioContrasena || ""}
-                          onChange={handleInputChange}
-                          required={!currentUser}
-                          placeholder={
-                            currentUser ? "Dejar en blanco para no cambiar" : ""
-                          }
-                        />
-                      </div>
-                    </>
+                    <div className="col-span-6 sm:col-span-3">
+                      <label
+                        htmlFor="UsuarioId"
+                        className="block mb-2 text-sm font-medium text-gray-900"
+                      >
+                        ID de Usuario
+                      </label>
+                      <input
+                        type="text"
+                        name="UsuarioId"
+                        id="UsuarioId"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
+                        value={formData.UsuarioId}
+                        onChange={handleInputChange}
+                        required
+                        disabled={!!currentUser}
+                      />
+                    </div>
                   )}
+
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="UsuarioNombre"
@@ -378,6 +360,45 @@ export default function UsuariosList({
                       <option value="I">Inactivo</option>
                     </select>
                   </div>
+                  {currentUser && !editingPassword && (
+                    <div className="col-span-6 sm:col-span-3 flex items-end">
+                      <button
+                        type="button"
+                        onClick={() => setEditingPassword(true)}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
+                        Cambiar contraseña
+                      </button>
+                    </div>
+                  )}
+                  {/* Campo de contraseña para nuevos usuarios o cuando se edita */}
+                  {(!currentUser || editingPassword) && (
+                    <div className="col-span-6 sm:col-span-3">
+                      <label
+                        htmlFor="UsuarioContrasena"
+                        className="block mb-2 text-sm font-medium text-gray-900"
+                      >
+                        Contraseña
+                        {currentUser && (
+                          <span className="text-gray-500 text-xs ml-1">
+                            (dejar en blanco para no cambiar)
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type="password"
+                        name="UsuarioContrasena"
+                        id="UsuarioContrasena"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
+                        value={formData.UsuarioContrasena}
+                        onChange={handleInputChange}
+                        required={!currentUser}
+                        placeholder={
+                          currentUser ? "Nueva contraseña" : "Contraseña"
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

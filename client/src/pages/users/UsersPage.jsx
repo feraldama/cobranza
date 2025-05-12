@@ -22,6 +22,7 @@ export default function UsuariosPage() {
   const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [editingPassword, setEditingPassword] = useState(false);
   const itemsPerPage = 10;
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -87,22 +88,22 @@ export default function UsuariosPage() {
   };
 
   const handleEdit = (user) => {
-    setCurrentUser(user); // Usuario a editar
+    setCurrentUser(user);
+    setEditingPassword(false);
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (userData) => {
     try {
-      if (!userData.UsuarioId && !currentUser) {
-        throw new Error("El ID de usuario es requerido");
-      }
-
       if (currentUser) {
-        // Editar usuario existente
+        // Si estamos editando y no cambiamos la contraseña, mantener la existente
+        if (!editingPassword) {
+          userData.UsuarioContrasena = currentUser.UsuarioContrasena;
+        }
         await updateUsuario(currentUser.UsuarioId, userData);
         setSuccessMessage("Usuario actualizado exitosamente");
       } else {
-        // Crear nuevo usuario - asegurar que tenga contraseña
+        // Crear nuevo usuario
         if (!userData.UsuarioContrasena) {
           throw new Error("La contraseña es requerida para nuevos usuarios");
         }
@@ -112,7 +113,8 @@ export default function UsuariosPage() {
 
       setIsModalOpen(false);
       setShowSuccessModal(true);
-      fetchUsuarios(); // Refrescar la lista
+      setEditingPassword(false); // Resetear después de enviar
+      fetchUsuarios();
     } catch (error) {
       setError(error.message);
     }
@@ -142,6 +144,8 @@ export default function UsuariosPage() {
         onCloseModal={() => setIsModalOpen(false)}
         currentUser={currentUser}
         onSubmit={handleSubmit}
+        editingPassword={editingPassword}
+        setEditingPassword={setEditingPassword}
       />
       <Pagination
         currentPage={currentPage}

@@ -157,6 +157,71 @@ const Usuario = {
       });
     });
   },
+
+  update: (id, usuarioData) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Construir la consulta dinámicamente basada en los campos proporcionados
+        let updateFields = [];
+        let values = [];
+
+        // Campos que pueden ser actualizados
+        const camposActualizables = [
+          "UsuarioNombre",
+          "UsuarioApellido",
+          "UsuarioCorreo",
+          "UsuarioIsAdmin",
+          "UsuarioEstado",
+          "LocalId",
+        ];
+
+        // Si se proporciona una nueva contraseña, hashearla
+        if (usuarioData.UsuarioContrasena) {
+          const hashedPassword = await bcrypt.hash(
+            usuarioData.UsuarioContrasena,
+            10
+          );
+          camposActualizables.push("UsuarioContrasena");
+          usuarioData.UsuarioContrasena = hashedPassword;
+        }
+
+        // Construir la consulta dinámicamente
+        camposActualizables.forEach((campo) => {
+          if (usuarioData[campo] !== undefined) {
+            updateFields.push(`${campo} = ?`);
+            values.push(usuarioData[campo]);
+          }
+        });
+
+        if (updateFields.length === 0) {
+          return resolve(null); // No hay campos para actualizar
+        }
+
+        // Agregar el ID al final de los valores
+        values.push(id);
+
+        const query = `
+          UPDATE usuario 
+          SET ${updateFields.join(", ")}
+          WHERE UsuarioId = ?
+        `;
+
+        db.query(query, values, async (err, result) => {
+          if (err) return reject(err);
+
+          if (result.affectedRows === 0) {
+            return resolve(null); // No se encontró el usuario
+          }
+
+          // Obtener el usuario actualizado
+          const updatedUsuario = await Usuario.getById(id);
+          resolve(updatedUsuario);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
 };
 
 module.exports = Usuario;

@@ -23,7 +23,7 @@ export default function UsuariosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [editingPassword, setEditingPassword] = useState(false);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -49,7 +49,7 @@ export default function UsuariosPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, appliedSearchTerm]);
+  }, [currentPage, appliedSearchTerm, itemsPerPage]);
 
   useEffect(() => {
     fetchUsuarios();
@@ -120,6 +120,11 @@ export default function UsuariosPage() {
     setCurrentPage(page);
   };
 
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetear a la primera página cuando cambia el número de items por página
+  };
+
   if (loading) return <div>Cargando usuarios...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -147,6 +152,8 @@ export default function UsuariosPage() {
         currentPage={currentPage}
         totalPages={usuariosData.pagination.totalPages}
         onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={handleItemsPerPageChange}
       />
 
       {/* Modal de éxito - fuera de cualquier container que limite su ancho */}

@@ -24,7 +24,7 @@ export default function MovementsPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [currentMovement, setCurrentMovement] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const fetchMovimientos = useCallback(async () => {
     try {
@@ -48,7 +48,7 @@ export default function MovementsPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, appliedSearchTerm]);
+  }, [currentPage, appliedSearchTerm, itemsPerPage]);
 
   useEffect(() => {
     fetchMovimientos();
@@ -81,7 +81,7 @@ export default function MovementsPage() {
   };
 
   const handleCreate = () => {
-    setCurrentMovement(null); // Indica que es un nuevo registro
+    setCurrentMovement(null);
     setIsModalOpen(true);
   };
 
@@ -115,6 +115,11 @@ export default function MovementsPage() {
     setCurrentPage(page);
   };
 
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetear a la primera página cuando cambia el número de items por página
+  };
+
   if (loading) return <div>Cargando registros...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -140,6 +145,8 @@ export default function MovementsPage() {
         currentPage={currentPage}
         totalPages={movimientosData.pagination.totalPages}
         onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={handleItemsPerPageChange}
       />
 
       {showSuccessModal && (

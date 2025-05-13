@@ -1,6 +1,12 @@
 import React from "react";
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  itemsPerPage,
+  onItemsPerPageChange,
+}) => {
   // Calcular el rango de páginas a mostrar
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -46,7 +52,21 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex justify-center mt-4">
+    <div className="flex justify-between items-center mt-4">
+      <div className="flex items-center">
+        <label className="mr-2 text-sm text-gray-600">Mostrar:</label>
+        <select
+          value={itemsPerPage}
+          onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+          className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+        >
+          <option value={10}>10</option>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+        </select>
+      </div>
+
       <nav className="inline-flex rounded-md shadow">
         <button
           onClick={() => onPageChange(currentPage - 1)}

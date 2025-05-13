@@ -44,11 +44,11 @@ export default function MovementsList({
     {
       key: "RegistroDiarioCajaFecha",
       label: "Fecha",
-      render: (item) => formatDate(item.RegistroDiarioCajaFecha),
+      render: (row) => formatDate(row.RegistroDiarioCajaFecha),
     },
     {
       key: "RegistroDiarioCajaDetalle",
-      label: "Detalle",
+      label: "Descripción",
     },
     {
       key: "RegistroDiarioCajaMonto",
@@ -71,7 +71,6 @@ export default function MovementsList({
 
   return (
     <>
-      {/* Barra superior de búsqueda y acciones */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <div className="flex-1">
           <SearchButton
@@ -79,7 +78,7 @@ export default function MovementsList({
             onSearch={onSearch}
             onKeyPress={onKeyPress}
             onSearchSubmit={onSearchSubmit}
-            placeholder="Buscar registros"
+            placeholder="Buscar registros..."
           />
         </div>
         <div className="py-4">
@@ -90,14 +89,12 @@ export default function MovementsList({
           />
         </div>
       </div>
-
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm text-gray-600">
           Mostrando {movimientos.length} de {pagination?.totalItems} registros
         </div>
       </div>
 
-      {/* Tabla de movimientos usando el componente DataTable */}
       <DataTable
         columns={columns}
         data={movimientos}

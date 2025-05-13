@@ -7,16 +7,18 @@ export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen">
       {/* Navbar con altura fija */}
-      <Navbar setMobileOpen={setMobileOpen} />
+      <div className="flex-shrink-0">
+        <Navbar setMobileOpen={setMobileOpen} />
+      </div>
 
       {/* Contenedor principal que ocupa el resto */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar ahora con altura completa menos navbar */}
+        {/* Sidebar */}
         <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-        {/* Contenido principal */}
+        {/* Contenido principal con scroll */}
         <main className="flex-1 overflow-y-auto p-4 lg:ml-64">
           <Outlet />
         </main>

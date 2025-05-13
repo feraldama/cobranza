@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SearchButton from "../common/Input/SearchButton";
 import ActionButton from "../common/Button/ActionButton";
 import DataTable from "../common/Table/DataTable";

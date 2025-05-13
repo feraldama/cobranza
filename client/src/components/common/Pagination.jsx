@@ -9,8 +9,13 @@ const Pagination = ({
 }) => {
   // Calcular el rango de páginas a mostrar
   const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      // Mostrar todas las páginas si son pocas
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
     const pageNumbers = [];
-    const maxVisiblePages = 5; // Número máximo de páginas visibles alrededor de la actual
+    const maxVisiblePages = 2; // Menos páginas visibles en mobile
 
     // Siempre mostrar la primera página
     pageNumbers.push(1);
@@ -20,10 +25,10 @@ const Pagination = ({
     let endPage = Math.min(totalPages - 1, currentPage + maxVisiblePages);
 
     // Asegurarse de que mostramos suficientes páginas si estamos cerca de los extremos
-    if (currentPage <= maxVisiblePages) {
-      endPage = Math.min(2 * maxVisiblePages + 1, totalPages - 1);
-    } else if (currentPage >= totalPages - maxVisiblePages) {
-      startPage = Math.max(totalPages - 2 * maxVisiblePages, 2);
+    if (currentPage <= 3) {
+      endPage = 4;
+    } else if (currentPage >= totalPages - 2) {
+      startPage = totalPages - 3;
     }
 
     // Agregar puntos suspensivos si hay un salto entre la primera página y el rango
@@ -41,10 +46,8 @@ const Pagination = ({
       pageNumbers.push("...");
     }
 
-    // Siempre mostrar la última página si hay más de una página
-    if (totalPages > 1) {
-      pageNumbers.push(totalPages);
-    }
+    // Siempre mostrar la última página
+    pageNumbers.push(totalPages);
 
     return pageNumbers;
   };
@@ -52,8 +55,8 @@ const Pagination = ({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex justify-between items-center mt-4">
-      <div className="flex items-center">
+    <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
+      <div className="flex items-center order-2 sm:order-1">
         <label className="mr-2 text-sm text-gray-600">Mostrar:</label>
         <select
           value={itemsPerPage}
@@ -67,37 +70,41 @@ const Pagination = ({
         </select>
       </div>
 
-      <nav className="inline-flex rounded-md shadow">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-        >
-          Anterior
-        </button>
-
-        {pageNumbers.map((number, index) => (
+      <nav className="inline-flex rounded-md shadow order-1 sm:order-2 w-full sm:w-auto overflow-x-auto sm:overflow-visible">
+        <div className="flex">
           <button
-            key={number === "..." ? `ellipsis-${index}` : number}
-            onClick={() => number !== "..." && onPageChange(number)}
-            disabled={number === "..."}
-            className={`px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium ${
-              currentPage === number
-                ? "text-blue-600 bg-blue-50"
-                : "text-gray-700 hover:bg-gray-50"
-            } ${number === "..." ? "cursor-default" : "cursor-pointer"}`}
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 whitespace-nowrap"
           >
-            {number}
+            Anterior
           </button>
-        ))}
 
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-        >
-          Siguiente
-        </button>
+          {pageNumbers.map((number, index) => (
+            <button
+              key={number === "..." ? `ellipsis-${index}` : number}
+              onClick={() => number !== "..." && onPageChange(number)}
+              disabled={number === "..."}
+              className={`px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium ${
+                currentPage === number
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-gray-700 hover:bg-gray-50"
+              } ${
+                number === "..." ? "cursor-default" : "cursor-pointer"
+              } whitespace-nowrap`}
+            >
+              {number}
+            </button>
+          ))}
+
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 whitespace-nowrap"
+          >
+            Siguiente
+          </button>
+        </div>
       </nav>
     </div>
   );

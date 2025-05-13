@@ -26,7 +26,7 @@ const RegistroDiarioCaja = {
   getAllPaginated: (limit, offset) => {
     return new Promise((resolve, reject) => {
       db.query(
-        "SELECT * FROM registrodiariocaja LIMIT ? OFFSET ?",
+        "SELECT * FROM registrodiariocaja ORDER BY RegistroDiarioCajaFecha DESC LIMIT ? OFFSET ?",
         [limit, offset],
         (err, results) => {
           if (err) return reject(err);

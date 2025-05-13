@@ -1,13 +1,49 @@
-// components/common/Pagination.jsx
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  const pageNumbers = [];
+  // Calcular el rango de páginas a mostrar
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5; // Número máximo de páginas visibles alrededor de la actual
 
-  // Calcular páginas a mostrar (puedes personalizar esto)
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+    // Siempre mostrar la primera página
+    pageNumbers.push(1);
+
+    // Calcular el rango alrededor de la página actual
+    let startPage = Math.max(2, currentPage - maxVisiblePages);
+    let endPage = Math.min(totalPages - 1, currentPage + maxVisiblePages);
+
+    // Asegurarse de que mostramos suficientes páginas si estamos cerca de los extremos
+    if (currentPage <= maxVisiblePages) {
+      endPage = Math.min(2 * maxVisiblePages + 1, totalPages - 1);
+    } else if (currentPage >= totalPages - maxVisiblePages) {
+      startPage = Math.max(totalPages - 2 * maxVisiblePages, 2);
+    }
+
+    // Agregar puntos suspensivos si hay un salto entre la primera página y el rango
+    if (startPage > 2) {
+      pageNumbers.push("...");
+    }
+
+    // Agregar páginas en el rango calculado
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    // Agregar puntos suspensivos si hay un salto entre el rango y la última página
+    if (endPage < totalPages - 1) {
+      pageNumbers.push("...");
+    }
+
+    // Siempre mostrar la última página si hay más de una página
+    if (totalPages > 1) {
+      pageNumbers.push(totalPages);
+    }
+
+    return pageNumbers;
+  };
+
+  const pageNumbers = getPageNumbers();
 
   return (
     <div className="flex justify-center mt-4">
@@ -20,15 +56,16 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           Anterior
         </button>
 
-        {pageNumbers.map((number) => (
+        {pageNumbers.map((number, index) => (
           <button
-            key={number}
-            onClick={() => onPageChange(number)}
+            key={number === "..." ? `ellipsis-${index}` : number}
+            onClick={() => number !== "..." && onPageChange(number)}
+            disabled={number === "..."}
             className={`px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium ${
               currentPage === number
                 ? "text-blue-600 bg-blue-50"
                 : "text-gray-700 hover:bg-gray-50"
-            }`}
+            } ${number === "..." ? "cursor-default" : "cursor-pointer"}`}
           >
             {number}
           </button>
